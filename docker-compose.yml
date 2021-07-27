@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  database:
+    image: mysql:5.7
+    container_name: database
+    volumes:
+      - dbdata:/var/lib/mysql
+    command: --max_allowed_packet=268435456
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: database
+      MYSQL_USER: database_user
+      MYSQL_PASSWORD: secret
+      MYSQL_HOST: db
+    networks:
+      - db-network
+
+  php-fpm:
+    depends_on:
+      - database
+    build: ./docker/php
+    restart: always
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www/
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+    networks:
+      - app-network
+      - db-network
+
+  webserver:
+    depends_on:
+      - php-fpm
+    image: nginx:1.16-alpine
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - app-network
+
+volumes:
+  dbdata:
+
+networks:
+  app-network:
+    driver: bridge
+  db-network:
+    driver: bridge
