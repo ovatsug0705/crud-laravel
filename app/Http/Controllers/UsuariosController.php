@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Interfaces\TaskRepositoryInterface;
 use App\Interfaces\UsuarioRepositoryInterface;
@@ -93,8 +95,10 @@ class UsuariosController extends Controller
     {
         try {
             $this->validateRequest($request);
-            
+
             $data = $this->getRequestData($request);
+
+            $data['image_path'] = $request->file('image_path')->store('photos');
 
             $user = $this->usuarioRepository->getByEmail($request->get('email'));
     
@@ -134,9 +138,14 @@ class UsuariosController extends Controller
             
             $data = $this->getRequestData($request);
 
+            $data['image_path'] = $request->file('image_path')->store('photos');
+
             $user = $this->usuarioRepository->getByEmail($request->get('email'));
-    
+            
             if ($user == null || $user["id"] == $id) {
+                $currentUsuarioPath = $this->usuarioRepository->getById($id)['image_path'];
+                Storage::delete($currentUsuarioPath);
+
                 $user = $this->usuarioRepository->update($id, $data);
             } else {
                 $message_bag = new MessageBag();
@@ -173,7 +182,10 @@ class UsuariosController extends Controller
                 $this->taskRepository->delete($task["id"]);
             }
 
+            $usuarioPath = $this->usuarioRepository->getById($id)['image_path'];
+
             $this->usuarioRepository->delete($id);
+            Storage::delete($usuarioPath);
         } catch (Exception $e) {
             return back()
                 ->with('error', 'Não foi possível deletar esse item, tente novamente');
@@ -196,11 +208,14 @@ class UsuariosController extends Controller
         $validator = Validator::make($request->all(), [
             'name'  => 'required|string|min:3',
             'email' => 'required|string|email',
+            'image_path' => 'required|mimes:png,jpg,jpeg',
         ],[
             'name.required' => 'O campo nome é obrigatório.',
             'name.min' => 'O nome deve ter no mínimo 3 letras.',
             'email.required' => 'O campo e-mail é obrigatório',
-            'email.email' => 'Insira um e-mail válido'
+            'email.email' => 'Insira um e-mail válido',
+            'image_path.required' => 'Insira uma foto',
+            'image_path.mimes' => 'Insira uma imagem nos formatos png, jpg ou jpg'
         ]);
 
         if ($validator->fails()) {

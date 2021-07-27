@@ -9,10 +9,15 @@
 
     <hr>
 
-    <div>
-        <p><strong>ID:</strong> {{ $usuario["id"] }}</p>
-        <p><strong>Nome:</strong> {{ $usuario["name"] }}</p>
-        <p><strong>E-mail:</strong> {{ $usuario["email"] }}</p>
+    <div style="display: flex;">
+        <div style="margin-bottom: 20px; overflow: hidden; border-radius: 20px; display: inline-block; max-width: 400px;">
+            <img style="max-width: 100%;" src="{{ env('APP_URL') }}/storage/{{ $usuario['image_path'] }}" alt="{{ $usuario["name"] }}">
+        </div>
+        <div style="margin-left: 20px;">
+            <p><strong>ID:</strong> {{ $usuario["id"] }}</p>
+            <p><strong>Nome:</strong> {{ $usuario["name"] }}</p>
+            <p><strong>E-mail:</strong> {{ $usuario["email"] }}</p>
+        </div>
     </div>
 
     <hr>

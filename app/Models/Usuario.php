@@ -15,6 +15,7 @@ class Usuario extends Model
     protected $fillable = [
         'name',
         'email',
+        'image_path',
     ];
 
     /**

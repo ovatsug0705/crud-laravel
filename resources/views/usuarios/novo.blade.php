@@ -16,9 +16,9 @@
 @endif
 
 @if (empty($usuario))
-<form action="{{ route('usuarios.add') }}" method="post">
+<form action="{{ route('usuarios.add') }}" method="post" enctype="multipart/form-data">
 @else
-<form action="{{ route('usuarios.update', $usuario["id"]) }}" method="post">
+<form action="{{ route('usuarios.update', $usuario["id"]) }}" method="post" enctype="multipart/form-data">
 @endif
     @csrf
 
@@ -30,6 +30,11 @@
     <fieldset class="form-group">
         <label for="email">E-mail:</label>
         <input type="email" required name="email" id="email" class="form-control" value="{{ old('email') ?? $usuario["email"] ?? '' }}">
+    </fieldset>
+
+    <fieldset class="form-group">
+        <label for="email">Imagem:</label>
+        <input type="file" required name="image_path" id="image_path" accept="image/png,image/jpg,image/jpeg" class="form-control">
     </fieldset>
 
     <hr>

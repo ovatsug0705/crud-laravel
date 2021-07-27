@@ -17,6 +17,7 @@ class CreateUsuariosTable extends Migration
             $table->id();
             $table->string('name', 128);
             $table->string('email', 256);
+            $table->string('image_path');
             $table->timestamps();
         });
     }

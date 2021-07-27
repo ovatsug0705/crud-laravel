@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\UploadController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +21,10 @@ use App\Http\Controllers\UsuariosController;
 Route::group(['middleware' => 'web'], function() {
     Route::get('/', [HomeController::class, 'index']);
     Route::get('/login', [HomeController::class, 'login'])->name('login');
+    Route::get('/cadastro', [HomeController::class, 'register'])->name('cadastro');
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    Route::post('auth/cadastro', [RegisterController::class, 'register'])->name('register');
 });
 
 Route::group(['prefix' => 'usuarios', 'middleware' => 'web'], function() {
@@ -35,3 +40,6 @@ Route::group(['prefix' => 'usuarios', 'middleware' => 'web'], function() {
     
     Route::delete('/deletar/{id}', [UsuariosController::class, 'delete'])->name('usuarios.deletar');
 });
+
+Route::view('/upload', 'upload.form');
+Route::post('/upload', [UploadController::class, 'uploadFile'])->name('upload');
