@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Interfaces\TaskRepositoryInterface;
 use App\Interfaces\UsuarioRepositoryInterface;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class UsuariosController extends Controller
@@ -104,6 +105,13 @@ class UsuariosController extends Controller
     
             if ($user == null) {
                 $user = $this->usuarioRepository->add($data);
+
+                Mail::send('emails.userCreated', $user,
+                    function($message) {
+                        $message->to('to.email@email.com', 'Aplicação laravel CRUD')
+                                ->subject('Usuário criado!');
+                    }
+                );
             } else {
                 $message_bag = new MessageBag();
                 $message_bag->add('email', 'E-mail já cadastrado!');
