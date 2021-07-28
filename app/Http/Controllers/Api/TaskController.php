@@ -11,9 +11,12 @@ use Illuminate\Support\Facades\Validator;
 use App\Interfaces\TaskRepositoryInterface;
 use App\Interfaces\UsuarioRepositoryInterface;
 use Illuminate\Validation\ValidationException;
+use App\Traits\TestTrait;
 
 class TaskController extends Controller
 {
+
+    use TestTrait;
 
     /**
      * Task Repository instance
@@ -51,6 +54,8 @@ class TaskController extends Controller
 
         try {
             $tasks = $this->taskRepository->all();
+            $tasks["test"] = $this->getTest();
+            $tasks["fakeData"] = $this->getFakeData();
         } catch (Exception $e) {
             $response->statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             $response->message = 'Internal server error';

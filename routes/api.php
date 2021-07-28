@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,5 +27,20 @@ Route::group(['middleware' => ['apiJwt']], function () {
     
         Route::apiResource('tasks', '\App\Http\Controllers\Api\TaskController');
     });
+});
+
+Route::get('http-test', function() {
+    $data = Http::get('http://dummy.restapiexample.com/api/v1/employees' );
+    return $data->json();
+});
+
+Route::post('http-test', function() {
+    $data = Http::post('http://dummy.restapiexample.com/api/v1/create', [
+        'name' => 'Gustavo gomes',
+        'salary' => 3000,
+        'age' => 22
+    ]);
+
+    return $data->json();
 });
 
